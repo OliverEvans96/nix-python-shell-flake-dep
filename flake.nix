@@ -10,12 +10,11 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         projectDir = ./.;
         python = pkgs.python38;
-        finalPython = python.override { packageOverrides = flower-power.overlay.${system}; };
-        pythonEnv = finalPython.withPackages (ps: [
-          ps.flower-power
-        ]);
-      in
-      {
+        finalPython = python.override {
+          packageOverrides = flower-power.overlay.${system};
+        };
+        pythonEnv = finalPython.withPackages (ps: [ ps.flower-power ]);
+      in {
         defaultPackage = pythonEnv;
         devShell = pythonEnv.env;
       });
