@@ -5,15 +5,17 @@
     flower-power.url = "github:oliverevans96/nix-python-library-example";
   };
   outputs = { self, nixpkgs-unstable, flake-utils, flower-power }:
-    let
-      pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
-      projectDir = ./.;
-      python = pkgs.python38;
-      pythonEnv = python.withPackages (ps: [
-          flower-power
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
+        projectDir = ./.;
+        python = pkgs.python38;
+        pythonEnv = python.withPackages (ps: [
+          flower-power.defaultPackage.${system}
         ]);
-    in flake-utils.lib.eachDefaultSystem (system: {
-      defaultPackage = pythonEnv;
-      devShell = pythonEnv.env;
-    });
+      in
+      {
+        defaultPackage = pythonEnv;
+        devShell = pythonEnv.env;
+      });
 }
