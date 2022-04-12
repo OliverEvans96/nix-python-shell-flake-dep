@@ -1,17 +1,18 @@
 {
   inputs = {
-    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-21.11";
     flake-utils.url = "github:numtide/flake-utils";
     flower-power.url = "github:oliverevans96/nix-python-library-example";
   };
-  outputs = { self, nixpkgs-unstable, flake-utils, flower-power }:
+  outputs = { self, nixpkgs, flake-utils, flower-power }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
         projectDir = ./.;
         python = pkgs.python38;
-        pythonEnv = python.withPackages (ps: [
-          flower-power.defaultPackage.${system}
+        finalPython = python.override { packageOverrides = flower-power.overlay.${system}; };
+        pythonEnv = finalPython.withPackages (ps: [
+          ps.flower-power
         ]);
       in
       {
