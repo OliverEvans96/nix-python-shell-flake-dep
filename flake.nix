@@ -7,7 +7,7 @@
   outputs = { self, nixpkgs, flake-utils, flower-power }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = nixpkgs.legacyPackages.${system};
         projectDir = ./.;
         python = pkgs.python38;
         finalPython = python.override {
